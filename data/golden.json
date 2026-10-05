@@ -1,0 +1,4 @@
+[
+  {"question": "What is the capital of France?", "expected_answer": "Paris"},
+  {"question": "What is the capital of Japan?", "expected_answer": "Tokyo"}
+]

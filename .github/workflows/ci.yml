@@ -21,3 +21,6 @@ jobs:
 
       - name: Run tests
         run: python -m pytest -q
+
+      - name: Quality gate
+        run: python -m app.gate --pipeline good_pipeline --threshold 0.8
