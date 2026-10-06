@@ -36,7 +36,7 @@ Changing one answer in the pipeline drops the score below the 0.80 threshold:
 ## Roadmap
 
 - [ ] Real LLM pipeline and LLM-as-judge scoring
-- [ ] Background job queue for long runs
+- [x] Runs execute in the background (in-process; a separate worker with a queue is still to do)
 - [x] Docker and Postgres
 - [ ] Live deployment
 
@@ -51,3 +51,7 @@ Without Docker, the app uses a local SQLite file. Setting DATABASE_URL points it
 ## CI proof
 
 [Pull request #1](https://github.com/mayank-gupta-develop/llm-eval-harness/pull/1) deliberately breaks one answer in the pipeline. CI runs the tests, which pass, then fails at the Quality gate step.
+
+## Running an evaluation
+
+POST /runs returns 202 with a pending run and scores the test cases in the background. Poll GET /runs/{id} until its status is completed. A run interrupted by a server restart stays in the running state.
