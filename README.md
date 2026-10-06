@@ -37,5 +37,13 @@ Changing one answer in the pipeline drops the score below the 0.80 threshold:
 
 - [ ] Real LLM pipeline and LLM-as-judge scoring
 - [ ] Background job queue for long runs
-- [ ] Docker and Postgres
+- [x] Docker and Postgres
 - [ ] Live deployment
+
+## Run with Docker (API + Postgres)
+
+    docker compose up --build -d
+    curl http://127.0.0.1:8000/health
+    docker compose down
+
+Without Docker, the app uses a local SQLite file. Setting DATABASE_URL points it at Postgres instead.
