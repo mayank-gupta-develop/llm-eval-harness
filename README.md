@@ -47,3 +47,7 @@ Changing one answer in the pipeline drops the score below the 0.80 threshold:
     docker compose down
 
 Without Docker, the app uses a local SQLite file. Setting DATABASE_URL points it at Postgres instead.
+
+## CI proof
+
+[Pull request #1](https://github.com/mayank-gupta-develop/llm-eval-harness/pull/1) deliberately breaks one answer in the pipeline. CI runs the tests, which pass, then fails at the Quality gate step.
