@@ -11,15 +11,24 @@ def test_run_scores_pass_and_fail(client):
     japan_id = add_case(client, "What is the capital of Japan?", "Tokyo")
 
     response = client.post("/runs", json={})
-    assert response.status_code == 201
+    assert response.status_code == 202
+    assert response.json()["status"] == "pending"
 
-    body = response.json()
-    assert body["status"] == "completed"
-    assert body["avg_score"] == 0.5
+    run = client.get(f"/runs/{response.json()['id']}").json()
+    assert run["status"] == "completed"
+    assert run["avg_score"] == 0.5
 
-    passed = {r["test_case_id"]: r["passed"] for r in body["results"]}
+    passed = {r["test_case_id"]: r["passed"] for r in run["results"]}
     assert passed[france_id] is True
     assert passed[japan_id] is False
+
+
+def test_good_pipeline_scores_perfect(client):
+    add_case(client, "What is the capital of France?", "Paris")
+    add_case(client, "What is the capital of Japan?", "Tokyo")
+
+    run_id = client.post("/runs", json={"pipeline_name": "good_pipeline"}).json()["id"]
+    assert client.get(f"/runs/{run_id}").json()["avg_score"] == 1.0
 
 
 def test_run_with_no_test_cases_returns_400(client):

@@ -7,6 +7,7 @@ from sqlalchemy.pool import StaticPool
 from app import models  # noqa: F401  (registers the tables)
 from app.database import Base, get_db
 from app.main import app
+from app.runs import get_session_factory
 
 
 @pytest.fixture
@@ -27,5 +28,6 @@ def client():
             db.close()
 
     app.dependency_overrides[get_db] = override_get_db
+    app.dependency_overrides[get_session_factory] = lambda: TestingSession
     yield TestClient(app)
     app.dependency_overrides.clear()
