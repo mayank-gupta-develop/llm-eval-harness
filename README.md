@@ -35,7 +35,7 @@ Changing one answer in the pipeline drops the score below the 0.80 threshold:
 
 ## Roadmap
 
-- [ ] Real LLM pipeline and LLM-as-judge scoring
+- [x] Real LLM pipeline and LLM-as-judge scoring (runs in GitHub Actions)
 - [x] Runs execute in the background (in-process; a separate worker with a queue is still to do)
 - [x] Docker and Postgres
 - [x] Live deployment on free Render and Neon tiers
@@ -75,3 +75,7 @@ Evaluated on 16 hand-labeled answers. The set deliberately includes tricky wrong
 The whole-word scorer still misses negation ("is not Tokyo"), numbers written as words ("Seven" for 7), and wrong sentences that mention the right word. Raw results are in results/judge_eval.json.
 
 On a separate 15-question golden set, the real pipeline (gpt-oss-20b) was judged correct on all 15. The first substring scorer marked 2 of those wrong: a number written as a word, and a Unicode space bug that the comparison exposed and that is now fixed with a test.
+
+## Run the real-model evaluation (in the cloud)
+
+Open the Actions tab, choose "Real model evaluation", and click Run workflow. It needs a repository secret named GROQ_API_KEY (a free Groq key). The run compares the scorers on the golden set, evaluates the judge on the labeled cases, and attaches the results as an artifact called eval-results. The live API on Render does not hold the key, so it only runs the simulated pipelines.
