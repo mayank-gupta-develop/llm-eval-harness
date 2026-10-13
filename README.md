@@ -38,7 +38,7 @@ Changing one answer in the pipeline drops the score below the 0.80 threshold:
 - [ ] Real LLM pipeline and LLM-as-judge scoring
 - [x] Runs execute in the background (in-process; a separate worker with a queue is still to do)
 - [x] Docker and Postgres
-- [ ] Live deployment
+- [x] Live deployment on free Render and Neon tiers
 
 ## Run with Docker (API + Postgres)
 
@@ -55,3 +55,9 @@ Without Docker, the app uses a local SQLite file. Setting DATABASE_URL points it
 ## Running an evaluation
 
 POST /runs returns 202 with a pending run and scores the test cases in the background. Poll GET /runs/{id} until its status is completed. A run interrupted by a server restart stays in the running state.
+
+## Live demo
+
+https://llm-eval-harness-fj40.onrender.com/docs
+
+Free tier: the service sleeps after about 15 minutes idle, so the first request can take 50 seconds or more. Data is stored in a free Neon Postgres database.
