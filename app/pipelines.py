@@ -18,3 +18,15 @@ PIPELINES = {
     "fake_pipeline": fake_pipeline,
     "good_pipeline": good_pipeline,
 }
+
+
+from app.llm import chat  # noqa: E402
+
+PIPELINE_MODEL = "openai/gpt-oss-20b"
+
+
+def llm_pipeline(question: str) -> str:
+    return chat(PIPELINE_MODEL, f"Answer in one short sentence. {question}")
+
+
+PIPELINES["llm_pipeline"] = llm_pipeline
