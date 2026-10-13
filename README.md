@@ -79,3 +79,9 @@ On a separate 15-question golden set, the real pipeline (gpt-oss-20b) was judged
 ## Run the real-model evaluation (in the cloud)
 
 Open the Actions tab, choose "Real model evaluation", and click Run workflow. It needs a repository secret named GROQ_API_KEY (a free Groq key). The run compares the scorers on the golden set, evaluates the judge on the labeled cases, and attaches the results as an artifact called eval-results. The live API on Render does not hold the key, so it only runs the simulated pipelines.
+
+## API key
+
+POST /test-cases and POST /runs require an x-api-key header that matches the API_KEY environment variable. Reads and /health are open. If API_KEY is not set on the server, writes are rejected.
+
+    curl -X POST $URL/test-cases -H "x-api-key: $API_KEY" -H "Content-Type: application/json" -d '{"question":"2+2?","expected_answer":"4"}'
