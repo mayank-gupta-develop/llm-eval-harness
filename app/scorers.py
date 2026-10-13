@@ -1,16 +1,20 @@
 import re
 import unicodedata
 
+from app.llm import chat
+
 
 def normalize(text: str) -> str:
-    return re.sub(r"[^a-z0-9 ]", "", unicodedata.normalize("NFKC", text).lower()).strip()
+    text = unicodedata.normalize("NFKC", text).lower()
+    text = re.sub(r"[-\u2010-\u2015]", " ", text)
+    text = re.sub(r"[^a-z0-9 ]", "", text)
+    return " ".join(text.split())
 
 
 def contains_scorer(expected: str, actual: str) -> float:
-    return 1.0 if normalize(expected) in normalize(actual) else 0.0
+    e, a = normalize(expected), normalize(actual)
+    return 1.0 if f" {e} " in f" {a} " else 0.0
 
-
-from app.llm import chat  # noqa: E402
 
 JUDGE_MODEL = "openai/gpt-oss-120b"
 

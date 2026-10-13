@@ -23,3 +23,12 @@ def test_normalize_strips_punctuation():
 
 def test_unicode_spaces_are_normalized():
     assert contains_scorer("Leonardo da Vinci", "Leonardo da\u202fVinci painted it.") == 1.0
+
+
+def test_whole_word_match_only():
+    assert contains_scorer("7", "There are 17 continents.") == 0.0
+    assert contains_scorer("No", "Yes, it is not hard to see it.") == 0.0
+
+
+def test_hyphen_counts_as_space():
+    assert contains_scorer("forty-four", "forty four") == 1.0

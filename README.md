@@ -61,3 +61,17 @@ POST /runs returns 202 with a pending run and scores the test cases in the backg
 https://llm-eval-harness-fj40.onrender.com/docs
 
 Free tier: the service sleeps after about 15 minutes idle, so the first request can take 50 seconds or more. Data is stored in a free Neon Postgres database.
+
+## Scorer comparison
+
+Evaluated on 16 hand-labeled answers. The set deliberately includes tricky wrong answers and I wrote the labels, so treat it as a stress test, not an accuracy estimate. One run only; models can vary between runs.
+
+| Scorer | Matches labels | False positives | False negatives |
+|---|---|---|---|
+| Substring match (first version) | 10/16 | 4 | 2 |
+| Whole-word match | 13/16 | 2 | 1 |
+| LLM judge (gpt-oss-120b) | 16/16 | 0 | 0 |
+
+The whole-word scorer still misses negation ("is not Tokyo"), numbers written as words ("Seven" for 7), and wrong sentences that mention the right word. Raw results are in results/judge_eval.json.
+
+On a separate 15-question golden set, the real pipeline (gpt-oss-20b) was judged correct on all 15. The first substring scorer marked 2 of those wrong: a number written as a word, and a Unicode space bug that the comparison exposed and that is now fixed with a test.
