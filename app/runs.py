@@ -3,6 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app import models, schemas
+from app.auth import require_api_key
 from app.database import SessionLocal, get_db
 from app.pipelines import PIPELINES
 from app.scorers import contains_scorer
@@ -53,7 +54,12 @@ def execute_run(run_id: int, session_factory) -> None:
         db.close()
 
 
-@router.post("/runs", response_model=schemas.EvalRunOut, status_code=202)
+@router.post(
+    "/runs",
+    response_model=schemas.EvalRunOut,
+    status_code=202,
+    dependencies=[Depends(require_api_key)],
+)
 def create_run(
     payload: schemas.EvalRunCreate,
     background_tasks: BackgroundTasks,

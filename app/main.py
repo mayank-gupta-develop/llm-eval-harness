@@ -5,6 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app import models, schemas
+from app.auth import require_api_key
 from app.database import Base, engine, get_db
 from app.runs import router as runs_router
 
@@ -24,7 +25,12 @@ def health():
     return {"status": "ok"}
 
 
-@app.post("/test-cases", response_model=schemas.TestCaseOut, status_code=201)
+@app.post(
+    "/test-cases",
+    response_model=schemas.TestCaseOut,
+    status_code=201,
+    dependencies=[Depends(require_api_key)],
+)
 def create_test_case(payload: schemas.TestCaseCreate, db: Session = Depends(get_db)):
     test_case = models.TestCase(**payload.model_dump())
     db.add(test_case)
