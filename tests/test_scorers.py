@@ -19,3 +19,7 @@ def test_dont_know_scores_zero():
 
 def test_normalize_strips_punctuation():
     assert normalize("  Hello, World! ") == "hello world"
+
+
+def test_unicode_spaces_are_normalized():
+    assert contains_scorer("Leonardo da Vinci", "Leonardo da\u202fVinci painted it.") == 1.0

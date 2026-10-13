@@ -1,0 +1,107 @@
+[
+  {
+    "question": "What is the capital of Canada?",
+    "expected": "Ottawa",
+    "answer": "Ottawa is the capital of Canada.",
+    "contains": 1.0,
+    "judge": 1.0
+  },
+  {
+    "question": "What is the capital of Australia?",
+    "expected": "Canberra",
+    "answer": "Canberra is the capital of Australia.",
+    "contains": 1.0,
+    "judge": 1.0
+  },
+  {
+    "question": "What is the chemical symbol for gold?",
+    "expected": "Au",
+    "answer": "The chemical symbol for gold is Au.",
+    "contains": 1.0,
+    "judge": 1.0
+  },
+  {
+    "question": "Who wrote Pride and Prejudice?",
+    "expected": "Jane Austen",
+    "answer": "Jane Austen wrote *Pride and Prejudice*.",
+    "contains": 1.0,
+    "judge": 1.0
+  },
+  {
+    "question": "What is the largest planet in our solar system?",
+    "expected": "Jupiter",
+    "answer": "Jupiter is the largest planet in our solar system.",
+    "contains": 1.0,
+    "judge": 1.0
+  },
+  {
+    "question": "In which year did World War II end?",
+    "expected": "1945",
+    "answer": "World War\u202fII ended in 1945.",
+    "contains": 1.0,
+    "judge": 1.0
+  },
+  {
+    "question": "What is the boiling point of water at sea level in degrees Celsius?",
+    "expected": "100",
+    "answer": "The boiling point of water at sea level is 100\u202f\u00b0C.",
+    "contains": 1.0,
+    "judge": 1.0
+  },
+  {
+    "question": "How many continents are there?",
+    "expected": "7",
+    "answer": "There are seven continents.",
+    "contains": 0.0,
+    "judge": 1.0
+  },
+  {
+    "question": "How many days are in a leap year?",
+    "expected": "366",
+    "answer": "A leap year has 366 days.",
+    "contains": 1.0,
+    "judge": 1.0
+  },
+  {
+    "question": "What is 12 times 12? Spell the answer out in words.",
+    "expected": "one hundred forty-four",
+    "answer": "12 times 12 is one hundred forty-four.",
+    "contains": 1.0,
+    "judge": 1.0
+  },
+  {
+    "question": "Is the Great Wall of China visible to the naked eye from space? Answer yes or no.",
+    "expected": "No",
+    "answer": "No.",
+    "contains": 1.0,
+    "judge": 1.0
+  },
+  {
+    "question": "Which element has atomic number 1?",
+    "expected": "Hydrogen",
+    "answer": "Hydrogen has atomic number\u202f1.",
+    "contains": 1.0,
+    "judge": 1.0
+  },
+  {
+    "question": "What is the currency of Japan?",
+    "expected": "Yen",
+    "answer": "The currency of Japan is the yen.",
+    "contains": 1.0,
+    "judge": 1.0
+  },
+  {
+    "question": "What is the largest ocean on Earth?",
+    "expected": "Pacific Ocean",
+    "answer": "The Pacific Ocean is the largest ocean on Earth.",
+    "contains": 1.0,
+    "judge": 1.0
+  },
+  {
+    "question": "Who painted the Mona Lisa?",
+    "expected": "Leonardo da Vinci",
+    "answer": "Leonardo da\u202fVinci painted the Mona\u202fLisa.",
+    "contains": 0.0,
+    "judge": 1.0
+  }
+]

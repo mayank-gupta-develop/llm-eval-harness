@@ -1,0 +1,17 @@
+[
+  {"question": "What is the capital of Canada?", "expected_answer": "Ottawa"},
+  {"question": "What is the capital of Australia?", "expected_answer": "Canberra"},
+  {"question": "What is the chemical symbol for gold?", "expected_answer": "Au"},
+  {"question": "Who wrote Pride and Prejudice?", "expected_answer": "Jane Austen"},
+  {"question": "What is the largest planet in our solar system?", "expected_answer": "Jupiter"},
+  {"question": "In which year did World War II end?", "expected_answer": "1945"},
+  {"question": "What is the boiling point of water at sea level in degrees Celsius?", "expected_answer": "100"},
+  {"question": "How many continents are there?", "expected_answer": "7"},
+  {"question": "How many days are in a leap year?", "expected_answer": "366"},
+  {"question": "What is 12 times 12? Spell the answer out in words.", "expected_answer": "one hundred forty-four"},
+  {"question": "Is the Great Wall of China visible to the naked eye from space? Answer yes or no.", "expected_answer": "No"},
+  {"question": "Which element has atomic number 1?", "expected_answer": "Hydrogen"},
+  {"question": "What is the currency of Japan?", "expected_answer": "Yen"},
+  {"question": "What is the largest ocean on Earth?", "expected_answer": "Pacific Ocean"},
+  {"question": "Who painted the Mona Lisa?", "expected_answer": "Leonardo da Vinci"}
+]

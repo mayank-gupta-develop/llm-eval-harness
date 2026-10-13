@@ -1,8 +1,9 @@
 import re
+import unicodedata
 
 
 def normalize(text: str) -> str:
-    return re.sub(r"[^a-z0-9 ]", "", text.lower()).strip()
+    return re.sub(r"[^a-z0-9 ]", "", unicodedata.normalize("NFKC", text).lower()).strip()
 
 
 def contains_scorer(expected: str, actual: str) -> float:
