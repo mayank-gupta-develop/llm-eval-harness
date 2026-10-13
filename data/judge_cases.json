@@ -1,0 +1,18 @@
+[
+  {"question": "What is the capital of Japan?", "expected": "Tokyo", "candidate": "Tokyo", "correct": true},
+  {"question": "What is the capital of Japan?", "expected": "Tokyo", "candidate": "The capital of Japan is not Tokyo.", "correct": false},
+  {"question": "What is the capital of Japan?", "expected": "Tokyo", "candidate": "Kyoto", "correct": false},
+  {"question": "How many continents are there?", "expected": "7", "candidate": "Seven", "correct": true},
+  {"question": "How many continents are there?", "expected": "7", "candidate": "There are 17 continents.", "correct": false},
+  {"question": "In which year did World War II end?", "expected": "1945", "candidate": "1944", "correct": false},
+  {"question": "In which year did World War II end?", "expected": "1945", "candidate": "It ended in 1945 in Europe and later that year in Asia.", "correct": true},
+  {"question": "What is the capital of Australia?", "expected": "Canberra", "candidate": "Sydney", "correct": false},
+  {"question": "What is the capital of Australia?", "expected": "Canberra", "candidate": "Canberra, not Sydney.", "correct": true},
+  {"question": "What is the chemical symbol for gold?", "expected": "Au", "candidate": "Ag", "correct": false},
+  {"question": "What is the chemical symbol for gold?", "expected": "Au", "candidate": "Gold's symbol is Au, from the Latin aurum.", "correct": true},
+  {"question": "Is the Great Wall of China visible to the naked eye from space? Answer yes or no.", "expected": "No", "candidate": "Yes, it is not hard to see it.", "correct": false},
+  {"question": "What is the largest planet in our solar system?", "expected": "Jupiter", "candidate": "Saturn is the largest planet, and Jupiter is second.", "correct": false},
+  {"question": "What is the boiling point of water at sea level in degrees Celsius?", "expected": "100", "candidate": "Water boils at 212 degrees Fahrenheit, which is 100 Celsius.", "correct": true},
+  {"question": "Who painted the Mona Lisa?", "expected": "Leonardo da Vinci", "candidate": "Michelangelo", "correct": false},
+  {"question": "What is 12 times 12? Spell the answer out in words.", "expected": "one hundred forty-four", "candidate": "one hundred forty four", "correct": true}
+]
