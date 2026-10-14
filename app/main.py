@@ -1,12 +1,14 @@
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.auth import require_api_key
 from app.database import Base, engine, get_db
+from app.demo import router as demo_router
 from app.runs import router as runs_router
 
 
@@ -18,6 +20,13 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="LLM Eval Harness", lifespan=lifespan)
 app.include_router(runs_router)
+app.include_router(demo_router)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://mayank-gupta-develop.github.io"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/health")
