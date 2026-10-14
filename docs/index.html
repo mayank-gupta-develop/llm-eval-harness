@@ -159,7 +159,7 @@ const $=id=>document.getElementById(id),sel=$("case"),exp=$("exp"),cand=$("cand"
 C.forEach((c,i)=>sel.add(new Option(c[1]+": "+c[2],i)));
 sel.add(new Option("Your own text","x"));
 function fill(){
-  if(sel.value==="x"){exp.value="";cand.value="";$("q").textContent="Type any expected answer and candidate answer.";exp.focus();return}
+  if(sel.value==="x"){exp.value="";cand.value="";res.textContent="";st.textContent="Type both answers, then press Score it.";$("q").textContent="Type any expected answer and candidate answer.";exp.focus();return}
   const c=C[sel.value];$("q").textContent="Question: "+Q[c[0]];exp.value=c[1];cand.value=c[2];
 }
 function show(j,rec){
@@ -191,6 +191,7 @@ async function go(){
 }
 sel.addEventListener("change",()=>{fill();if(sel.value!=="x")go()});
 $("f").addEventListener("submit",ev=>{ev.preventDefault();go()});
+[exp,cand].forEach(el=>el.addEventListener("input",()=>{res.textContent="";st.textContent="Press Score it to call the live API."}));
 sel.value="4";fill();
 })();
 </script>
