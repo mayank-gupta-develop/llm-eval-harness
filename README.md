@@ -4,15 +4,16 @@ Automated evaluation harness for LLM pipelines. It scores a pipeline's answers a
 
 ## Status
 
-Early build. The pipelines in `app/pipelines.py` are simulated stand-ins (one correct, one with a deliberate bug) used to prove the harness end to end. A real LLM pipeline and an LLM-as-judge scorer are next.
+Working end to end and deployed on free tiers. CI runs against simulated pipelines (one correct, one with a deliberate bug), so it needs no API key. The real LLM pipeline (gpt-oss-20b) and the LLM-as-judge scorer (gpt-oss-120b) run in a manual GitHub Actions workflow, described below.
 
 ## What works today
 
-- FastAPI service: create test cases, run an evaluation, fetch saved runs
-- SQLAlchemy models (SQLite) for test cases, runs, and per-question results
-- Rule-based scorer (case and punctuation insensitive)
-- 12 pytest tests, run on every push with GitHub Actions
-- Quality gate: `python -m app.gate` exits non-zero when the average score is below the threshold, which fails the CI build
+- FastAPI service: create test cases, run an evaluation in the background, fetch saved runs
+- SQLAlchemy models for test cases, runs and per-question results (SQLite locally, Postgres in Docker and on Neon)
+- Scorers: whole-word match and an LLM judge
+- 23 pytest tests, run on every push with GitHub Actions
+- Quality gate: python -m app.gate exits non-zero when the average score is below the threshold, which fails the CI build
+- A public demo endpoint and an interactive playground on the website
 
 ## Run it locally
 
@@ -89,3 +90,9 @@ POST /test-cases and POST /runs require an x-api-key header that matches the API
 ## Website
 
 https://mayank-gupta-develop.github.io/llm-eval-harness/
+
+## Playground
+
+The website has an interactive scorer playground. It calls POST /demo/score on the live API, which runs the two string scorers and returns both results. The endpoint is public and stateless: it needs no API key, writes nothing to the database and calls no model. The expected answer is capped at 200 characters and the candidate at 400. Browsers can call it only from the project website. The LLM judge verdicts on the site are recorded from one run on the 16 labeled cases, because the public server holds no model key.
+
+    curl -X POST $URL/demo/score -H "Content-Type: application/json" -d '{"expected":"7","candidate":"There are 17 continents."}'
