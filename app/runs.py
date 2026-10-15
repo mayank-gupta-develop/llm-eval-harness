@@ -59,6 +59,14 @@ def execute_run(run_id: int, session_factory) -> None:
     response_model=schemas.EvalRunOut,
     status_code=202,
     dependencies=[Depends(require_api_key)],
+    tags=["Runs"],
+    summary="Start an evaluation run",
+    description="Scores one pipeline against every stored test case. The call returns at once with status pending, and the scoring happens in the background. Poll GET /runs/{id} until the status is completed. Pipelines: fake_pipeline has a deliberate wrong answer, good_pipeline answers correctly, and llm_pipeline calls a real model, which needs a key the public server does not hold, so that run ends as failed. Requires the x-api-key header.",
+    responses={
+        400: {"description": "No test cases exist yet"},
+        401: {"description": "Missing or wrong API key"},
+        404: {"description": "Unknown pipeline name"},
+    },
 )
 def create_run(
     payload: schemas.EvalRunCreate,
@@ -80,7 +88,14 @@ def create_run(
     return run
 
 
-@router.get("/runs/{run_id}", response_model=schemas.EvalRunOut)
+@router.get(
+    "/runs/{run_id}",
+    response_model=schemas.EvalRunOut,
+    tags=["Runs"],
+    summary="Get a run and its results",
+    description="Returns the run status (pending, running, completed or failed), the average score, and one result per test case with the answer, the score and pass or fail. No key needed.",
+    responses={404: {"description": "Run not found"}},
+)
 def get_run(run_id: int, db: Session = Depends(get_db)):
     run = db.get(models.EvalRun, run_id)
     if run is None:

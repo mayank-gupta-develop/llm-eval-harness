@@ -11,7 +11,7 @@ from app import models, schemas
 from app.auth import require_api_key
 from app.database import Base, engine, get_db
 from app.demo import router as demo_router
-from app.docs_theme import HEAD as DOCS_HEAD, TOP as DOCS_TOP
+from app.docs_theme import HEAD as DOCS_HEAD, TAGS as DOCS_TAGS, TOP as DOCS_TOP
 from app.runs import router as runs_router
 
 
@@ -21,7 +21,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="LLM Eval Harness", lifespan=lifespan, docs_url=None)
+app = FastAPI(title="LLM Eval Harness", lifespan=lifespan, docs_url=None, openapi_tags=DOCS_TAGS)
 app.include_router(runs_router)
 app.include_router(demo_router)
 app.add_middleware(
@@ -32,7 +32,12 @@ app.add_middleware(
 )
 
 
-@app.get("/health")
+@app.get(
+    "/health",
+    tags=["Health"],
+    summary="Check that the server is up",
+    description="Returns status ok when the API is running. No key needed. On the free tier the first call after a quiet spell can take up to a minute while the server wakes up.",
+)
 def health():
     return {"status": "ok"}
 
@@ -42,6 +47,10 @@ def health():
     response_model=schemas.TestCaseOut,
     status_code=201,
     dependencies=[Depends(require_api_key)],
+    tags=["Test cases"],
+    summary="Add a test case",
+    description="Stores a question and the answer a correct pipeline should give. Every later run is scored against all stored test cases. Requires the x-api-key header.",
+    responses={401: {"description": "Missing or wrong API key"}},
 )
 def create_test_case(payload: schemas.TestCaseCreate, db: Session = Depends(get_db)):
     test_case = models.TestCase(**payload.model_dump())
@@ -51,7 +60,13 @@ def create_test_case(payload: schemas.TestCaseCreate, db: Session = Depends(get_
     return test_case
 
 
-@app.get("/test-cases", response_model=list[schemas.TestCaseOut])
+@app.get(
+    "/test-cases",
+    response_model=list[schemas.TestCaseOut],
+    tags=["Test cases"],
+    summary="List test cases",
+    description="Returns every stored test case. No key needed.",
+)
 def list_test_cases(db: Session = Depends(get_db)):
     return db.scalars(select(models.TestCase)).all()
 

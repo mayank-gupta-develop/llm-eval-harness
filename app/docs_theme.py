@@ -51,3 +51,10 @@ TOP = """
 <p>Reading is open. Creating test cases and runs needs an <code>x-api-key</code> header. The demo endpoint needs no key and runs the two string scorers. On the free tier, the first request after a quiet spell can take up to a minute.</p>
 </header>
 """
+
+TAGS = [
+    {"name": "Test cases", "description": "The questions and expected answers that every run is scored against."},
+    {"name": "Runs", "description": "A run scores one pipeline against every stored test case. Runs execute in the background."},
+    {"name": "Demo", "description": "The public endpoint behind the playground on the website. No key needed and nothing is stored."},
+    {"name": "Health", "description": "A liveness check."},
+]

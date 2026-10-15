@@ -4,6 +4,9 @@ from pydantic import BaseModel, ConfigDict
 
 
 class TestCaseCreate(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={"examples": [{"question": "What is the capital of France?", "expected_answer": "Paris"}]}
+    )
     question: str
     expected_answer: str
 
@@ -18,6 +21,7 @@ class TestCaseOut(BaseModel):
 
 
 class EvalRunCreate(BaseModel):
+    model_config = ConfigDict(json_schema_extra={"examples": [{"pipeline_name": "good_pipeline"}]})
     pipeline_name: str = "fake_pipeline"
 
 
