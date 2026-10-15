@@ -2,6 +2,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi.responses import HTMLResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -9,6 +11,7 @@ from app import models, schemas
 from app.auth import require_api_key
 from app.database import Base, engine, get_db
 from app.demo import router as demo_router
+from app.docs_theme import HEAD as DOCS_HEAD, TOP as DOCS_TOP
 from app.runs import router as runs_router
 
 
@@ -18,7 +21,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="LLM Eval Harness", lifespan=lifespan)
+app = FastAPI(title="LLM Eval Harness", lifespan=lifespan, docs_url=None)
 app.include_router(runs_router)
 app.include_router(demo_router)
 app.add_middleware(
@@ -51,3 +54,19 @@ def create_test_case(payload: schemas.TestCaseCreate, db: Session = Depends(get_
 @app.get("/test-cases", response_model=list[schemas.TestCaseOut])
 def list_test_cases(db: Session = Depends(get_db)):
     return db.scalars(select(models.TestCase)).all()
+
+
+@app.get("/docs", include_in_schema=False)
+def docs():
+    page = get_swagger_ui_html(
+        openapi_url="/openapi.json",
+        title="LLM Eval Harness API",
+        swagger_ui_parameters={
+            "docExpansion": "none",
+            "defaultModelsExpandDepth": -1,
+            "displayRequestDuration": True,
+        },
+    ).body.decode()
+    page = page.replace("</head>", DOCS_HEAD + "</head>", 1)
+    page = page.replace('<div id="swagger-ui">', DOCS_TOP + '<div id="swagger-ui">', 1)
+    return HTMLResponse(page)
