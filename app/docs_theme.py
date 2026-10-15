@@ -34,6 +34,8 @@ html,body{margin:0;background:#000;color:#f4f4f2;font-family:Outfit,"Helvetica N
 .swagger-ui .btn.execute{background:#c9f542;border-color:#c9f542;color:#000!important}
 .swagger-ui .btn.cancel{border-color:#ff5b49}
 .swagger-ui .responses-inner,.swagger-ui .opblock-body .opblock-description-wrapper{background:transparent}
+.swagger-ui .opblock.opblock-get{border-color:#3a3a37;background:rgba(255,255,255,.03)}
+.swagger-ui .opblock.opblock-get .opblock-summary-method{background:#f4f4f2}
 </style>
 """
 
