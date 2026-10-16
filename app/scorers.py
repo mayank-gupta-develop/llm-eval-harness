@@ -6,7 +6,7 @@ from app.llm import chat
 
 def normalize(text: str) -> str:
     text = unicodedata.normalize("NFKC", text).lower()
-    text = re.sub(r"[-\u2010-\u2015]", " ", text)
+    text = re.sub(r"[-\u2010-\u2015\s]+", " ", text)
     text = re.sub(r"[^a-z0-9 ]", "", text)
     return " ".join(text.split())
 

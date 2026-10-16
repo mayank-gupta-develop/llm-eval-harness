@@ -32,3 +32,7 @@ def test_whole_word_match_only():
 
 def test_hyphen_counts_as_space():
     assert contains_scorer("forty-four", "forty four") == 1.0
+
+
+def test_newlines_separate_words():
+    assert contains_scorer("Jupiter", "Jupiter.\n\nNote to grader") == 1.0
