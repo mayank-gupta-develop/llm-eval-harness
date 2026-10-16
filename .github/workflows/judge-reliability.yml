@@ -1,0 +1,36 @@
+name: Judge reliability
+
+on:
+  workflow_dispatch:
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the judge 3 times on 60 labeled cases
+        shell: bash
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python -m app.judge_eval_v2 | tee summary.txt
+
+      - name: Show results on the run summary
+        if: always()
+        shell: bash
+        run: |
+          { echo '~~~'; cat summary.txt; echo '~~~'; } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: judge-reliability-results
+          path: results/
