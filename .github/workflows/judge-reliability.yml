@@ -3,6 +3,9 @@ name: Judge reliability
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   evaluate:
     runs-on: ubuntu-24.04

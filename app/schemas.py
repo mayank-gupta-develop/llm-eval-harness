@@ -1,14 +1,14 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class TestCaseCreate(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={"examples": [{"question": "What is the capital of France?", "expected_answer": "Paris"}]}
     )
-    question: str
-    expected_answer: str
+    question: str = Field(min_length=1, max_length=500)
+    expected_answer: str = Field(min_length=1, max_length=500)
 
 
 class TestCaseOut(BaseModel):

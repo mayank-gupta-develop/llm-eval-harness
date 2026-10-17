@@ -3,6 +3,9 @@ name: Real model evaluation
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   evaluate:
     runs-on: ubuntu-24.04
