@@ -10,7 +10,7 @@ class LLMError(RuntimeError):
     pass
 
 
-def chat(model: str, prompt: str, retries: int = 3) -> str:
+def chat(model: str, prompt: str, retries: int = 3, system: str | None = None) -> str:
     key = os.environ.get("GROQ_API_KEY")
     if not key:
         raise LLMError("GROQ_API_KEY is not set")
@@ -20,7 +20,7 @@ def chat(model: str, prompt: str, retries: int = 3) -> str:
             headers={"Authorization": f"Bearer {key}"},
             json={
                 "model": model,
-                "messages": [{"role": "user", "content": prompt}],
+                "messages": ([{"role": "system", "content": system}] if system else []) + [{"role": "user", "content": prompt}],
                 "temperature": 0,
             },
             timeout=60,
