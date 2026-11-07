@@ -1,0 +1,50 @@
+name: Judge gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - app/scorers.py
+      - app/llm.py
+      - app/judge_gate.py
+      - data/injection_heldout.json
+      - data/judge_cases_v2.json
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+    inputs:
+      judge:
+        description: Which judge prompt to test
+        type: choice
+        options: [v2, v1]
+        default: v2
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the judge gate
+        shell: bash
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          JUDGE_VERSION: ${{ inputs.judge || 'v2' }}
+        run: python -m app.judge_gate | tee summary.txt
+
+      - name: Show results on the run summary
+        if: always()
+        shell: bash
+        run: |
+          { echo '~~~'; cat summary.txt; echo '~~~'; } >> "$GITHUB_STEP_SUMMARY"
