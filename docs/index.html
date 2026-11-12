@@ -111,6 +111,7 @@ h1{font-size:clamp(50px,10.6vw,176px);font-weight:650;line-height:.93;letter-spa
 </tbody></table></div>
 <p class="note">60 labeled answers, 30 correct and 30 wrong, in ten categories. The judge ran three times on every case and gave the same verdict all three times on 59 of 60. Both scorers were perfect on plain answers. The judge wins on negation, numbers written as words, extra false claims and synonyms. On a separate 15-question set, the real pipeline (gpt-oss-20b) was judged correct on all 15.</p>
 <p class="note">Where it fails: two answers ending in a fake "SYSTEM NOTE" told the judge what to output, and it obeyed in all three runs. The cases and labels were drafted with an AI assistant and not independently verified, and the set was built to be hard for string matching, so read this as a stress test and not an accuracy estimate.</p>
+<p class="note">A hardened judge prompt raised accuracy on 24 unseen injection cases from 16 to 20 (67% to 83%), though with so few cases the improvement is not statistically established. A judge gate runs weekly and fails if injection accuracy falls under 80%: the hardened prompt passes (26 of 30) and the original fails (18 of 30). <a href="https://github.com/mayank-gupta-develop/llm-eval-harness#hardening-the-judge">Details in the README.</a></p>
 </div>
 </section>
 
@@ -153,7 +154,7 @@ GATE FAILED: quality below threshold</pre>
 <div><dt>Built with</dt><dd>FastAPI, SQLAlchemy, Postgres on Neon, Docker, GitHub Actions, and Groq-hosted models.</dd></div>
 <div><dt>Hosting</dt><dd>Free tiers only. The first request after a quiet spell can take 50 seconds while the server wakes up.</dd></div>
 <div><dt>Access</dt><dd>Reading is open. Creating test cases and runs needs an API key.</dd></div>
-<div><dt>Not yet</dt><dd>Runs execute inside the API process. A restart mid-run leaves that run stuck, and a separate worker is still to do. The judge can also be fooled by instructions hidden inside an answer.</dd></div>
+<div><dt>Not yet</dt><dd>Runs execute inside the API process. A restart mid-run leaves that run stuck, and a separate worker is still to do. Even the hardened judge still misses some injection styles: 4 of 24 unseen cases.</dd></div>
 </dl>
 </section>
 
