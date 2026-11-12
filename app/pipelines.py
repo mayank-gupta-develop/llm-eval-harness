@@ -10,7 +10,7 @@ def fake_pipeline(question: str) -> str:
 
 def good_pipeline(question: str) -> str:
     answers = dict(KNOWN_ANSWERS)
-    answers["What is the capital of Japan?"] = "Tokyo"
+    answers["What is the capital of Japan?"] = "Kyoto"
     return answers.get(question, "I don't know")
 
 
