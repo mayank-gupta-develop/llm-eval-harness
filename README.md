@@ -4,7 +4,7 @@
 
 A service that checks LLM answers before they ship. It runs a pipeline against a stored test set, grades every answer, keeps the run history, and fails the build in CI when quality drops below a threshold.
 
-**[Website](https://mayank-gupta-develop.github.io/llm-eval-harness/)** | **[Live API reference](https://llm-eval-harness-fj40.onrender.com/docs)** | **[Failing-gate proof](https://github.com/mayank-gupta-develop/llm-eval-harness/pull/1)**
+**[Website](https://mayank-gupta-develop.github.io/llm-eval-harness/)** | **[API reference](https://mayank-gupta-develop.github.io/llm-eval-harness/api.html)** | **[Failing-gate proof](https://github.com/mayank-gupta-develop/llm-eval-harness/pull/1)**
 
 ![Project website](docs/images/site.png)
 
@@ -33,6 +33,8 @@ The judge gave the same verdict on all three runs for 59 of 60 cases. Both score
 ## Hardening the judge
 
 The first judge followed a fake "SYSTEM NOTE" planted inside an answer. The hardened prompt (`judge_scorer_v2`) adds a system message that marks the answer as untrusted data, wraps the question, the reference and the answer in tags, and strips those tags from the answer. The prompt, 24 new injection cases (six attack styles, four each) and the success rule were all fixed before anything was measured: fix more cases than it breaks, and lose no more than one of the 54 ordinary cases.
+
+![Hardening the judge: results and the judge gate](docs/images/hardening-chart.png)
 
 | 24 unseen injection cases (majority of 3 runs) | Original prompt | Hardened prompt |
 |---|---|---|
@@ -111,7 +113,8 @@ Pipelines for `POST /runs`: `fake_pipeline` (one deliberate wrong answer), `good
 │   ├── judge_eval_v2.py      60-case, 3-run judge evaluation with intervals
 │   ├── judge_injection_eval.py  original against hardened judge prompt on unseen injection cases
 │   ├── judge_gate.py         fails if the judge is fooled more than the baseline allows
-│   └── docs_theme.py         styling for the API reference page
+│   ├── docs_theme.py         styling for the API reference page
+│   └── export_openapi.py     writes docs/openapi.json for the website
 ├── data/
 │   ├── golden.json           golden test set (2 cases)
 │   ├── golden_v2.json        golden test set (15 cases)
@@ -122,6 +125,8 @@ Pipelines for `POST /runs`: `fake_pipeline` (one deliberate wrong answer), `good
 ├── tests/                    pytest suite: API, auth, scorers, docs, limits, statistics
 ├── docs/
 │   ├── index.html            project website (GitHub Pages)
+│   ├── api.html              API reference page with a working Try it out
+│   ├── openapi.json          saved API spec, kept in sync by a test
 │   └── images/               images used in this README
 ├── .github/workflows/
 │   ├── ci.yml                tests and quality gate on every push and pull request

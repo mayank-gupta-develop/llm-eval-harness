@@ -1,0 +1,538 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "LLM Eval Harness",
+  "version": "0.1.0"
+ },
+ "paths": {
+  "/runs": {
+   "post": {
+    "tags": [
+     "Runs"
+    ],
+    "summary": "Start an evaluation run",
+    "description": "Scores one pipeline against every stored test case. The call returns at once with status pending, and the scoring happens in the background. Poll GET /runs/{id} until the status is completed. Pipelines: fake_pipeline has a deliberate wrong answer, good_pipeline answers correctly, and llm_pipeline calls a real model, which needs a key the public server does not hold, so that run ends as failed. Requires the x-api-key header.",
+    "operationId": "create_run_runs_post",
+    "parameters": [
+     {
+      "name": "x-api-key",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "API key. Required on write endpoints.",
+       "title": "X-Api-Key"
+      },
+      "description": "API key. Required on write endpoints."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/EvalRunCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "202": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EvalRunOut"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "No test cases exist yet"
+     },
+     "401": {
+      "description": "Missing or wrong API key"
+     },
+     "404": {
+      "description": "Unknown pipeline name"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/runs/{run_id}": {
+   "get": {
+    "tags": [
+     "Runs"
+    ],
+    "summary": "Get a run and its results",
+    "description": "Returns the run status (pending, running, completed or failed), the average score, and one result per test case with the answer, the score and pass or fail. No key needed.",
+    "operationId": "get_run_runs__run_id__get",
+    "parameters": [
+     {
+      "name": "run_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Run Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EvalRunOut"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "Run not found"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/score": {
+   "post": {
+    "tags": [
+     "Demo"
+    ],
+    "summary": "Score one answer two ways",
+    "description": "Runs the substring scorer and the whole-word scorer on one expected and one candidate answer and returns both results, where 1.0 accepts and 0.0 rejects. Public and stateless, with no model call. The expected answer is limited to 200 characters and the candidate to 400.",
+    "operationId": "score_demo_score_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ScoreRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/health": {
+   "get": {
+    "tags": [
+     "Health"
+    ],
+    "summary": "Check that the server is up",
+    "description": "Returns status ok when the API is running. No key needed. On the free tier the first call after a quiet spell can take up to a minute while the server wakes up.",
+    "operationId": "health_health_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/test-cases": {
+   "post": {
+    "tags": [
+     "Test cases"
+    ],
+    "summary": "Add a test case",
+    "description": "Stores a question and the answer a correct pipeline should give. Every later run is scored against all stored test cases. Requires the x-api-key header.",
+    "operationId": "create_test_case_test_cases_post",
+    "parameters": [
+     {
+      "name": "x-api-key",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "API key. Required on write endpoints.",
+       "title": "X-Api-Key"
+      },
+      "description": "API key. Required on write endpoints."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TestCaseCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TestCaseOut"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "Missing or wrong API key"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "Test cases"
+    ],
+    "summary": "List test cases",
+    "description": "Returns every stored test case. No key needed.",
+    "operationId": "list_test_cases_test_cases_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/TestCaseOut"
+         },
+         "title": "Response List Test Cases Test Cases Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "EvalResultOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "test_case_id": {
+      "type": "integer",
+      "title": "Test Case Id"
+     },
+     "actual_answer": {
+      "type": "string",
+      "title": "Actual Answer"
+     },
+     "score": {
+      "type": "number",
+      "title": "Score"
+     },
+     "passed": {
+      "type": "boolean",
+      "title": "Passed"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "test_case_id",
+     "actual_answer",
+     "score",
+     "passed"
+    ],
+    "title": "EvalResultOut"
+   },
+   "EvalRunCreate": {
+    "properties": {
+     "pipeline_name": {
+      "type": "string",
+      "title": "Pipeline Name",
+      "default": "fake_pipeline"
+     }
+    },
+    "type": "object",
+    "title": "EvalRunCreate",
+    "examples": [
+     {
+      "pipeline_name": "good_pipeline"
+     }
+    ]
+   },
+   "EvalRunOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "pipeline_name": {
+      "type": "string",
+      "title": "Pipeline Name"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "avg_score": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Avg Score"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     },
+     "results": {
+      "items": {
+       "$ref": "#/components/schemas/EvalResultOut"
+      },
+      "type": "array",
+      "title": "Results",
+      "default": []
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "pipeline_name",
+     "status",
+     "avg_score",
+     "created_at"
+    ],
+    "title": "EvalRunOut"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "ScoreRequest": {
+    "properties": {
+     "expected": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Expected"
+     },
+     "candidate": {
+      "type": "string",
+      "maxLength": 400,
+      "minLength": 1,
+      "title": "Candidate"
+     }
+    },
+    "type": "object",
+    "required": [
+     "expected",
+     "candidate"
+    ],
+    "title": "ScoreRequest",
+    "examples": [
+     {
+      "candidate": "There are 17 continents.",
+      "expected": "7"
+     }
+    ]
+   },
+   "TestCaseCreate": {
+    "properties": {
+     "question": {
+      "type": "string",
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Question"
+     },
+     "expected_answer": {
+      "type": "string",
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Expected Answer"
+     }
+    },
+    "type": "object",
+    "required": [
+     "question",
+     "expected_answer"
+    ],
+    "title": "TestCaseCreate",
+    "examples": [
+     {
+      "expected_answer": "Paris",
+      "question": "What is the capital of France?"
+     }
+    ]
+   },
+   "TestCaseOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "question": {
+      "type": "string",
+      "title": "Question"
+     },
+     "expected_answer": {
+      "type": "string",
+      "title": "Expected Answer"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "question",
+     "expected_answer",
+     "created_at"
+    ],
+    "title": "TestCaseOut"
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     },
+     "input": {
+      "title": "Input"
+     },
+     "ctx": {
+      "type": "object",
+      "title": "Context"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   }
+  }
+ },
+ "tags": [
+  {
+   "name": "Test cases",
+   "description": "The questions and expected answers that every run is scored against."
+  },
+  {
+   "name": "Runs",
+   "description": "A run scores one pipeline against every stored test case. Runs execute in the background."
+  },
+  {
+   "name": "Demo",
+   "description": "The public endpoint behind the playground on the website. No key needed and nothing is stored."
+  },
+  {
+   "name": "Health",
+   "description": "A liveness check."
+  }
+ ],
+ "servers": [
+  {
+   "url": "https://llm-eval-harness-fj40.onrender.com"
+  }
+ ]
+}

@@ -80,12 +80,14 @@ h1{font-size:clamp(50px,10.6vw,176px);font-weight:650;line-height:.93;letter-spa
 .btn{padding:19px 30px}
 .marks{right:calc(50% - 50vw - 18px)}
 .tick{position:absolute;left:calc(50% - 50vw);bottom:clamp(40px,6vw,80px);width:clamp(20px,5vw,64px);height:3px;background:var(--lime)}
+
+.shot{display:block;width:100%;height:auto;border:1px solid var(--line)}
 </style>
 </head>
 <body>
 <div class="wrap">
 <nav aria-label="Primary">
-<a href="#top">LLM Eval Harness</a><a href="#results">Results</a><a href="#try">Try it</a><a href="#how">How it works</a><a href="#proof">Proof</a><a href="#limits">Limits</a>
+<a href="#top">LLM Eval Harness</a><a href="#results">Results</a><a href="#try">Try it</a><a href="#how">How it works</a><a href="#proof">Proof</a><a href="#limits">Limits</a><a href="api.html">API</a>
 </nav>
 
 <header class="hero" id="top">
@@ -93,7 +95,7 @@ h1{font-size:clamp(50px,10.6vw,176px);font-weight:650;line-height:.93;letter-spa
 <h1>Check every <span class="chip" role="img" aria-label="Gradient with a lime threshold line"><svg viewBox="0 0 100 60" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ecece9"/><stop offset=".55" stop-color="#7d7d79"/><stop offset="1" stop-color="#0c0c0c"/></linearGradient><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .25 0"/></filter></defs><rect width="100" height="60" fill="url(#g)"/><rect width="100" height="60" filter="url(#n)"/><rect y="12" width="100" height="1.2" fill="#c9f542"/></svg></span> LLM answer before it <span class="chip" role="img" aria-label="Bar chart of passing and failing answers"><svg viewBox="0 0 100 64" preserveAspectRatio="none"><rect width="100" height="64" fill="#151514"/><rect x="8" y="22" width="12" height="42" fill="#c9f542"/><rect x="26" y="10" width="12" height="54" fill="#c9f542"/><rect x="44" y="36" width="12" height="28" fill="#ff5b49"/><rect x="62" y="16" width="12" height="48" fill="#c9f542"/><rect x="80" y="26" width="12" height="38" fill="#c9f542"/></svg></span> ships.</h1>
 <p class="lead">A FastAPI service that runs a pipeline against a golden test set, grades each answer, stores every run, and fails the build in CI when quality drops below a threshold.</p>
 <div class="cta">
-<a class="btn fill" href="https://llm-eval-harness-fj40.onrender.com/docs">Try the live API</a>
+<a class="btn fill" href="api.html">Try the live API</a>
 <a class="btn line" href="https://github.com/mayank-gupta-develop/llm-eval-harness">Read the source</a>
 </div>
 <div class="marks" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -111,7 +113,15 @@ h1{font-size:clamp(50px,10.6vw,176px);font-weight:650;line-height:.93;letter-spa
 </tbody></table></div>
 <p class="note">60 labeled answers, 30 correct and 30 wrong, in ten categories. The judge ran three times on every case and gave the same verdict all three times on 59 of 60. Both scorers were perfect on plain answers. The judge wins on negation, numbers written as words, extra false claims and synonyms. On a separate 15-question set, the real pipeline (gpt-oss-20b) was judged correct on all 15.</p>
 <p class="note">Where it fails: two answers ending in a fake "SYSTEM NOTE" told the judge what to output, and it obeyed in all three runs. The cases and labels were drafted with an AI assistant and not independently verified, and the set was built to be hard for string matching, so read this as a stress test and not an accuracy estimate.</p>
-<p class="note">A hardened judge prompt raised accuracy on 24 unseen injection cases from 16 to 20 (67% to 83%), though with so few cases the improvement is not statistically established. A judge gate runs weekly and fails if injection accuracy falls under 80%: the hardened prompt passes (26 of 30) and the original fails (18 of 30). <a href="https://github.com/mayank-gupta-develop/llm-eval-harness#hardening-the-judge">Details in the README.</a></p>
+<p class="note">The judge can be fooled by instructions hidden inside an answer. <a href="#hardening">See how far a hardened prompt gets.</a></p>
+</div>
+</section>
+
+<section class="row" id="hardening">
+<h2>Hardening the judge</h2>
+<div>
+<img class="shot" src="images/hardening-chart.png" alt="Bar chart: on 24 unseen injection cases the original judge prompt was right 16 times and the hardened prompt 20 times. The judge gate passes the hardened prompt at 26 of 30 and fails the original at 18 of 30.">
+<p class="note">The first judge obeyed a fake "SYSTEM NOTE" hidden inside an answer. The hardened prompt marks the answer as untrusted data. On 24 injection cases not used to design it, accuracy went from 16 to 20 (67% to 83%), but with so few cases that is not statistically established. Fake system notes went from 0 of 4 to 4 of 4, while fake reference answers, tag-closing tricks and one fake verdict still get through. A weekly judge gate fails if injection accuracy drops under 80%: the hardened prompt passes (26 of 30) and the original fails (18 of 30). Those are the cases used to choose the prompt, so the gate is a regression check and not a fresh measurement. <a href="https://github.com/mayank-gupta-develop/llm-eval-harness#hardening-the-judge">Full write-up in the README.</a></p>
 </div>
 </section>
 
